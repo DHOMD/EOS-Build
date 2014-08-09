@@ -1482,9 +1482,14 @@ EOS_TARGET_PACKAGE := $(PRODUCT_OUT)/EOS-$(TARGET_PRODUCT)-$(BUILD_DATE).zip
 .PHONY: otapackage bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
+ifneq ($(TARGET_CUSTOM_RELEASETOOL),)
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(EOS_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(EOS_TARGET_PACKAGE) > $(EOS_TARGET_PACKAGE).md5sum
 	@echo -e "Package complete: $(EOS_TARGET_PACKAGE)"
+else
+	@echo -e ${CL_YLW}"Running releasetool..."${CL_RST}
+	$(hide) ./vendor/$(DHO_VENDOR)/tools/squisher $(SQUISHER_ARGS)
+endif
 
 # -----------------------------------------------------------------
 # The update package
