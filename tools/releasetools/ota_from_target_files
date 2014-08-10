@@ -504,8 +504,18 @@ else if get_stage("%(bcb_dev)s", "stage") == "3/3" then
   if "selinux_fc" in OPTIONS.info_dict:
     WritePolicyConfig(OPTIONS.info_dict["selinux_fc"], output_zip)
 
+  script.Print("**     De Novo Lite Wipe In Progress **")
   script.FormatPartition("/system")
   script.Mount("/system")
+
+  script.DeleteRecursive(["/cache"])
+  script.DeleteRecursive(["/data/cron"])
+  script.DeleteRecursive(["/data/dalvik-cache"])
+  script.DeleteRecursive(["/data/tombstones/"])
+  script.DeleteFiles(["/data/system/usagestats/*"])
+  script.DeleteFiles(["/data/system/dropbox/*.txt"])
+  script.DeleteRecursive(["/data/media/0/Android/data/com.amazon.venezia/files/apks"])
+
   # Do not overwrite recovery by default
   #script.UnpackPackageDir("recovery", "/system")
   script.UnpackPackageDir("system", "/system")
